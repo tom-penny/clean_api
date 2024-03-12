@@ -42,25 +42,37 @@ public class Order : BaseEntity
     
     public void SetConfirmed()
     {
+        if (Status == OrderStatus.Confirmed) return;
+        
         Status = OrderStatus.Confirmed;
+        
         AddDomainEvent(new OrderConfirmed(this));
     }
 
     public void SetProcessing()
     {
+        if (Status == OrderStatus.Processing) return;
+
         Status = OrderStatus.Processing;
+        
         AddDomainEvent(new OrderProcessing(this));
     }
 
     public void SetCompleted()
     {
+        if (Status == OrderStatus.Completed) return;
+
         Status = OrderStatus.Completed;
+        
         AddDomainEvent(new OrderCompleted(this));
     }
 
     public void SetCancelled()
     {
+        if (Status == OrderStatus.Cancelled) return;
+
         Status = OrderStatus.Cancelled;
+        
         AddDomainEvent(new OrderCancelled(this));
     }
     
