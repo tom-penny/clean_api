@@ -21,14 +21,18 @@ public class Shipment : BaseEntity
     public void SetDispatchDate(DateTime dispatchDate)
     {
         if (DateDispatched != null) return;
+        
         DateDispatched = dispatchDate;
+        
         AddDomainEvent(new ShipmentDispatched(this));
     }
     
     public void SetDeliveryDate(DateTime deliveryDate)
     {
         if (DateDelivered != null) return;
+        
         DateDelivered = deliveryDate;
+        
         AddDomainEvent(new ShipmentDelivered(this));
     }
     
