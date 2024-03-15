@@ -6,5 +6,8 @@ public class GetOrderByIdValidator : AbstractValidator<GetOrderByIdQuery>
     {
         RuleFor(q => q.Id)
             .NotEqual(Guid.Empty);
+
+        RuleFor(q => q.UserId)
+            .NotEqual(Guid.Empty);
     }
 }
