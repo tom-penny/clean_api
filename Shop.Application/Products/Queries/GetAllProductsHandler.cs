@@ -2,10 +2,12 @@ using System.Linq.Expressions;
 
 namespace Shop.Application.Products.Queries;
 
-using Domain.Entities;
 using Interfaces;
+using Common.Models;
+using Common.Extensions;
+using Domain.Entities;
 
-public class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, Result<List<Product>>>
+public class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, Result<PagedList<Product>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -14,7 +16,7 @@ public class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, Result
         _context = context;
     }
     
-    public async Task<Result<List<Product>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedList<Product>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
     {
         var query = _context.Products.AsQueryable();
 
@@ -28,11 +30,8 @@ public class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, Result
                 : query.OrderBy(GetSortExpression(sortBy));
         }
 
-        var products = await query
-            .Include(p => p.Categories)
-            .Skip((request.Page - 1) * request.Size)
-            .Take(request.Size)
-            .ToListAsync(cancellationToken);
+        var products = await query.Include(p => p.Categories)
+            .ToPagedListAsync(request.Page, request.Size, cancellationToken);
 
         return Result.Ok(products);
     }

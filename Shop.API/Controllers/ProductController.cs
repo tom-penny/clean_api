@@ -42,8 +42,8 @@ public class ProductController : ControllerBase
         };
         
         var result = await _mediator.Send(query, cancellationToken);
-        
-        var products = result.Value.Select(o => o.ToResponse()).ToList();
+
+        var products = result.Value.ToResponse();
         
         return Ok(new { products });
     }
