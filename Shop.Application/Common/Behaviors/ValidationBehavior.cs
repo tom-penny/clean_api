@@ -1,4 +1,4 @@
-namespace Shop.Application.Behaviors;
+namespace Shop.Application.Common.Behaviors;
 
 // Pipeline interceptor for Mediatr request validation.
 
