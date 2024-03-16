@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Shop.Application.Behaviors;
+namespace Shop.Application.Common.Behaviors;
 
 // Pipeline interceptor for Mediatr request logging.
 

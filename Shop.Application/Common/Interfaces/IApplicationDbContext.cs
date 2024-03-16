@@ -1,4 +1,4 @@
-namespace Shop.Application.Interfaces;
+namespace Shop.Application.Common.Interfaces;
 
 using Domain.Entities;
 
