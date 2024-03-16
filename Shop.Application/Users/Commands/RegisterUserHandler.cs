@@ -2,7 +2,7 @@ using System.Transactions;
 
 namespace Shop.Application.Users.Commands;
 
-using Interfaces;
+using Common.Interfaces;
 using Domain.Entities;
 using Domain.Errors;
 

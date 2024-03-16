@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Shop.API.Controllers;
 
-using Mappings;
 using Extensions;
+using Mappings;
 using Models.Requests;
 using Application.Users.Commands;
 using Application.Users.Queries;

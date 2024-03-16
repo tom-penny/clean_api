@@ -1,7 +1,7 @@
 namespace Shop.Application.Products.Commands;
 
+using Common.Interfaces;
 using Domain.Entities;
-using Interfaces;
 
 public class CreateProductHandler : IRequestHandler<CreateProductCommand, Result<Product>>
 {

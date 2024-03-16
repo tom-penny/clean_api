@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Shop.Infrastructure.Authentication;
 
-using Application.Interfaces;
+using Application.Common.Interfaces;
 
 public class JwtProvider : IJwtProvider
 {

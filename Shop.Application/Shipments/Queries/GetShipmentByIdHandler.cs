@@ -1,6 +1,6 @@
 namespace Shop.Application.Shipments.Queries;
 
-using Interfaces;
+using Common.Interfaces;
 using Domain.Entities;
 using Domain.Errors;
 

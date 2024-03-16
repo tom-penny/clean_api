@@ -1,6 +1,6 @@
 namespace Shop.Application.Users.Events;
 
-using Interfaces;
+using Common.Interfaces;
 using Domain.Events;
 
 public class UserRegisteredHandler : INotificationHandler<UserRegistered>

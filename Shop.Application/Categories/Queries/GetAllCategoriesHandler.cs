@@ -1,7 +1,7 @@
 namespace Shop.Application.Categories.Queries;
 
+using Common.Interfaces;
 using Domain.Entities;
-using Interfaces;
 
 public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, Result<List<Category>>>
 {

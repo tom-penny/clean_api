@@ -1,18 +1,19 @@
 namespace Shop.Application.Users.Queries;
 
+using Common.Interfaces;
 using Domain.Errors;
 using Domain.Entities;
 
-public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, Result<Shop.Domain.Entities.User>>
+public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, Result<User>>
 {
-    private readonly Shop.Application.Interfaces.IApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public GetUserByIdHandler(Shop.Application.Interfaces.IApplicationDbContext context)
+    public GetUserByIdHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<Result<Shop.Domain.Entities.User>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<User>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u =>
             u.Id == new UserId(request.UserId), cancellationToken);

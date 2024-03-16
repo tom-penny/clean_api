@@ -1,6 +1,6 @@
 namespace Shop.Application.Users.Commands;
 
-using Interfaces;
+using Common.Interfaces;
 
 public class LogoutUserHandler : IRequestHandler<LogoutUserCommand, Result<Unit>>
 {
