@@ -2,7 +2,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Shop.Infrastructure.Caching;
 
-using Application.Interfaces;
+using Application.Common.Interfaces;
 
 public class CacheService : ICacheService
 {

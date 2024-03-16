@@ -3,7 +3,7 @@ using MailKit.Net.Smtp;
 
 namespace Shop.Infrastructure.Email;
 
-using Application.Interfaces;
+using Application.Common.Interfaces;
 
 public class EmailService : IEmailService
 {

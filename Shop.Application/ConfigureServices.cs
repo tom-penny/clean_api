@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Shop.Application;
 
-using Behaviors;
+using Common.Behaviors;
 
 // Service registration for Order.Application dependencies.
 

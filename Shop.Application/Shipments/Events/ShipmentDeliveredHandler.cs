@@ -2,8 +2,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Shop.Application.Shipments.Events;
 
+using Common.Interfaces;
 using Domain.Events;
-using Interfaces;
 
 // Domain event handler: sets order to completed.
 

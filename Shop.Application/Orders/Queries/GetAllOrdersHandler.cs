@@ -1,7 +1,7 @@
 namespace Shop.Application.Orders.Queries;
 
+using Common.Interfaces;
 using Domain.Entities;
-using Interfaces;
 
 public class GetAllOrdersHandler : IRequestHandler<GetAllOrdersQuery, Result<List<Order>>>
 {

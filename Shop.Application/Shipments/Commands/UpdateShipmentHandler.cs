@@ -1,6 +1,6 @@
 namespace Shop.Application.Shipments.Commands;
 
-using Interfaces;
+using Common.Interfaces;
 using Domain.Entities;
 using Domain.Errors;
 

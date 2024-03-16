@@ -1,13 +1,11 @@
-using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Shop.Infrastructure.Data;
 
 using Outbox;
-using Application.Interfaces;
 using Domain.Entities;
-using Domain.Primitives;
+using Application.Common.Interfaces;
 
 public class ApplicationDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>, IApplicationDbContext
 {

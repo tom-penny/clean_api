@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Shop.Infrastructure.Authorization;
 
-using Application.Interfaces;
+using Application.Common.Interfaces;
 
 public class ResourceAuthorizationService : IResourceAuthorizationService
 {

@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Shop.Application.Orders.Events;
 
-using Interfaces;
+using Common.Interfaces;
 using Domain.Events;
 
 public class OrderConfirmedHandler : INotificationHandler<OrderConfirmed>

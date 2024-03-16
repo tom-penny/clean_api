@@ -1,6 +1,6 @@
 namespace Shop.Application.Users.Commands;
 
-using Interfaces;
+using Common.Interfaces;
 using Domain.Errors;
 
 public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<string>>

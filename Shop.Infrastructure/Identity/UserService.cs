@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Shop.Infrastructure.Identity;
 
-using Application.Interfaces;
+using Application.Common.Interfaces;
 
 public class UserService : IUserService
 {

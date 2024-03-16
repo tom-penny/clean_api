@@ -12,7 +12,7 @@ using Caching;
 using Outbox;
 using Authentication;
 using Authorization;
-using Application.Interfaces;
+using Application.Common.Interfaces;
 
 public static class ConfigureServices
 {

@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace Shop.Application.Products.Queries;
 
-using Interfaces;
+using Common.Interfaces;
 using Common.Models;
 using Common.Extensions;
 using Domain.Entities;

@@ -2,8 +2,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Shop.Application.Shipments.Events;
 
+using Common.Interfaces;
 using Domain.Events;
-using Interfaces;
 
 public class ShipmentDispatchedHandler : INotificationHandler<ShipmentDispatched>
 {
