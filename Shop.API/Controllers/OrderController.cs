@@ -20,16 +20,24 @@ public class OrderController : ControllerBase
     }
 
     [Authorize(Policy = "RequireLogin")]
-    [HttpGet("/api/users/{id}/orders")]
-    public async Task<IActionResult> GetAllOrders([FromRoute] Guid id, CancellationToken cancellationToken)
+    [HttpGet("/api/users/{userId}/orders")]
+    public async Task<IActionResult> GetAllOrders([FromRoute] Guid userId, [FromBody] GetAllOrdersRequest request,
+        CancellationToken cancellationToken)
     {
-        var query = new GetAllOrdersQuery(id);
+        var query = new GetAllOrdersQuery
+        {
+            UserId = userId,
+            SortBy = request.SortBy,
+            OrderBy = request.OrderBy,
+            Page = request.Page,
+            Size = request.Size
+        };
         
         var result = await _mediator.Send(query, cancellationToken);
+
+        var response = result.Value.ToResponse();
         
-        var orders = result.Value.Select(o => o.ToResponse()).ToList();
-        
-        return Ok(new { orders });
+        return Ok(response);
     }
 
     [Authorize(Policy = "RequireLogin")]

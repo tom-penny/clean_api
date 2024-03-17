@@ -1,7 +1,8 @@
 namespace Shop.API.Mappings;
 
-using Domain.Entities;
 using Models.Responses;
+using Domain.Entities;
+using Application.Common.Models;
 
 public static class OrderMapper
 {
@@ -16,6 +17,17 @@ public static class OrderMapper
             Amount = order.Amount,
             Items = order.Items.Select(i => i.ToResponse()).ToList(),
             PaymentId = order.PaymentId?.Value.ToString()
+        };
+    }
+    
+    public static OrdersResponse ToResponse<T>(this PagedList<T> list) where T : Order
+    {
+        return new OrdersResponse
+        {
+            Page = list.Page,
+            Size = list.Size,
+            Count = list.Count,
+            Orders = list.Items.Select(o => o.ToResponse()).ToList(),
         };
     }
 }
