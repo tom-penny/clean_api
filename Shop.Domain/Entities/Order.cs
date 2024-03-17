@@ -14,6 +14,7 @@ public class Order : BaseEntity
     public UserId UserId { get; init; }
     public decimal Amount { get; init; }
     public OrderStatus Status { get; private set; }
+    public DateTime Created { get; init; }
     public List<OrderItem> Items { get; init; } = new();
     public PaymentId? PaymentId { get; private set; }
     
@@ -24,6 +25,7 @@ public class Order : BaseEntity
         UserId = userId;
         Amount = amount;
         Status = status;
+        Created = DateTime.UtcNow;
     }
 
     public void AddPayment(Payment payment)
