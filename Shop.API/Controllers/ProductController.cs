@@ -22,7 +22,7 @@ public class ProductController : ControllerBase
     [HttpGet("/api/products/{id}")]
     public async Task<IActionResult> GetProduct([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var query = new GetProductByIdQuery(id);
+        var query = new GetProductByIdQuery { Id = id };
         
         var result = await _mediator.Send(query, cancellationToken);
         
