@@ -1,15 +1,12 @@
-namespace Shop.Application.Orders.Queries;
+namespace Shop.Application.Users.Queries;
 
-public class GetAllOrdersValidator : AbstractValidator<GetAllOrdersQuery>
+public class GetAllUsersValidator : AbstractValidator<GetAllUsersQuery>
 {
-    private static readonly string[] SortValues = { "total", "date" };
+    private static readonly string[] SortValues = { "email", "name", "date" };
     private static readonly string[] OrderValues = { "asc", "desc" };
     
-    public GetAllOrdersValidator()
+    public GetAllUsersValidator()
     {
-        RuleFor(q => q.UserId)
-            .NotEqual(Guid.Empty);
-        
         RuleFor(q => q.SortBy)
             .Must(v => v == null || SortValues.Contains(v, StringComparer.OrdinalIgnoreCase));
         
