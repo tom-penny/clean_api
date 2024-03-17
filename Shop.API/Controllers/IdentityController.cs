@@ -86,4 +86,24 @@ public class IdentityController : ControllerBase
         
         return result.IsSuccess ? Ok(result.Value.ToResponse()) : result.ToProblem();
     }
+    
+    [Authorize(Policy = "RequireAdmin")]
+    [HttpGet("/api/users")]
+    public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsersRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetAllUsersQuery
+        {
+            SortBy = request.SortBy,
+            OrderBy = request.OrderBy,
+            Page = request.Page,
+            Size = request.Size
+        };
+        
+        var result = await _mediator.Send(query, cancellationToken);
+
+        var response = result.Value.ToResponse();
+        
+        return Ok(response);
+    }
 }

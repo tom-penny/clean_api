@@ -43,9 +43,9 @@ public class ProductController : ControllerBase
         
         var result = await _mediator.Send(query, cancellationToken);
 
-        var products = result.Value.ToResponse();
+        var response = result.Value.ToResponse();
         
-        return Ok(new { products });
+        return Ok(response);
     }
 
     [Authorize(Policy = "RequireAdmin")]
