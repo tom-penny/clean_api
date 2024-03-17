@@ -20,22 +20,28 @@ public class ShipmentDispatchedHandler : INotificationHandler<ShipmentDispatched
     {
         _logger.LogInformation("{@DateTime}: Started {@Request}",
             nameof(ShipmentDispatchedHandler), DateTime.UtcNow);
-        
-        var order = await _context.Orders.Include(o => o.Items)
-            .FirstOrDefaultAsync(o => o.Id == notification.Shipment.OrderId, cancellationToken);
-        
-        if (order == null) throw new Exception();
 
-        foreach (var item in order.Items)
+        try
         {
-            var product = await _context.Products
-                .FirstOrDefaultAsync(p => p.Id == item.ProductId, cancellationToken);
+            var order = await _context.Orders.Include(o => o.Items)
+                .FirstAsync(o => o.Id == notification.Shipment.OrderId, cancellationToken);
             
-            product?.AdjustStock(-item.Quantity);
+            foreach (var item in order.Items)
+            {
+                var product = await _context.Products
+                    .FirstOrDefaultAsync(p => p.Id == item.ProductId, cancellationToken);
+            
+                product?.AdjustStock(-item.Quantity);
+            }
+        
+            await _context.SaveChangesAsync(cancellationToken);
         }
-        
-        await _context.SaveChangesAsync(cancellationToken);
-        
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "{@DateTime}: Failed {@Request}",
+                nameof(ShipmentDispatchedHandler), DateTime.UtcNow);
+        }
+
         _logger.LogInformation("{@DateTime}: Completed {@Request}",
             nameof(ShipmentDispatchedHandler), DateTime.UtcNow);
     }

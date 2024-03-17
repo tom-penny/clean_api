@@ -22,15 +22,21 @@ public class ShipmentDeliveredHandler : INotificationHandler<ShipmentDelivered>
     {
         _logger.LogInformation("{@DateTime}: Started {@Request}",
             nameof(ShipmentDeliveredHandler), DateTime.UtcNow);
-        
-        var order = await _context.Orders.FirstOrDefaultAsync(o =>
-            o.Id == notification.Shipment.OrderId, cancellationToken);
-        
-        if (order == null) throw new Exception();
 
-        order.SetCompleted();
-                
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            var order = await _context.Orders.FirstAsync(o =>
+                o.Id == notification.Shipment.OrderId, cancellationToken);
+
+            order.SetCompleted();
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "{@DateTime}: Failed {@Request}",
+                nameof(ShipmentDeliveredHandler), DateTime.UtcNow);
+        }
         
         _logger.LogInformation("{@DateTime}: Completed {@Request}",
             nameof(ShipmentDeliveredHandler), DateTime.UtcNow);
