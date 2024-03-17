@@ -9,14 +9,19 @@ using Data;
 
 public class OutboxProcessor : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<OutboxProcessor> _logger;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly JsonSerializerSettings _jsonSettings;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(60);
 
-    public OutboxProcessor(IServiceProvider serviceProvider, ILogger<OutboxProcessor> logger)
+    public OutboxProcessor(ILogger<OutboxProcessor> logger, IServiceProvider serviceProvider)
     {
-        _serviceProvider = serviceProvider;
         _logger = logger;
+        _serviceProvider = serviceProvider;
+        _jsonSettings = new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All
+        };
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -45,9 +50,7 @@ public class OutboxProcessor : BackgroundService
         {
             try
             {
-                var eventType = Type.GetType(message.Type);
-
-                var domainEvent = JsonConvert.DeserializeObject(message.Data, eventType!);
+                var domainEvent = JsonConvert.DeserializeObject<INotification>(message.Data, _jsonSettings);
 
                 await publisher.Publish(domainEvent!, stoppingToken);
                 
