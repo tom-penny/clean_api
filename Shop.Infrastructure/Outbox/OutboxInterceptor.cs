@@ -35,6 +35,7 @@ public class OutboxInterceptor : SaveChangesInterceptor
                 Type = domainEvent.GetType().Name,
                 Data = JsonConvert.SerializeObject(domainEvent, new JsonSerializerSettings
                 {
+                    TypeNameHandling = TypeNameHandling.All,
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 })
             };
