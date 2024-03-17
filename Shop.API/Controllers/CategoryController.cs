@@ -22,7 +22,7 @@ public class CategoryController : ControllerBase
     [HttpGet("/api/categories/{id}")]
     public async Task<IActionResult> GetCategory([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var query = new GetCategoryByIdQuery(id);
+        var query = new GetCategoryByIdQuery { Id = id };
         
         var result = await _mediator.Send(query, cancellationToken);
         
