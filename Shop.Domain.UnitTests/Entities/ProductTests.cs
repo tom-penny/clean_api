@@ -53,4 +53,20 @@ public class ProductTests
 
         _product.Stock.Should().Be(5);
     }
+
+    [Fact]
+    public void Activate_ShouldSetActiveToTrue()
+    {
+        _product.Activate();
+
+        _product.IsActive.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void Deactivate_ShouldSetActiveToFalse()
+    {
+        _product.Deactivate();
+
+        _product.IsActive.Should().BeFalse();
+    }
 }
