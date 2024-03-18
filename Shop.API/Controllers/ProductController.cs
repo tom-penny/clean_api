@@ -88,4 +88,16 @@ public class ProductController : ControllerBase
         
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
+    
+    [Authorize(Policy = "RequireAdmin")]
+    [HttpDelete("/api/products/{id}")]
+    public async Task<IActionResult> DeleteProduct([FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteProductCommand(id);
+
+        var result = await _mediator.Send(command, cancellationToken);
+        
+        return result.IsSuccess ? NoContent() : result.ToProblem();
+    }
 }
