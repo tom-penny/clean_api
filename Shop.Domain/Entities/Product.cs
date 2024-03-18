@@ -10,6 +10,7 @@ public class Product : BaseEntity
     public string Name { get; private set; }
     public int Stock { get; private set; }
     public decimal Price { get; private set; }
+    public bool IsActive { get; private set; }
     public DateTime Created { get; init; }
     public List<Category> Categories { get; private set; }
     
@@ -19,6 +20,7 @@ public class Product : BaseEntity
         Name = name;
         Stock = stock;
         Price = price;
+        IsActive = true;
         Created = DateTime.UtcNow;
         Categories = categories;
     }
@@ -35,6 +37,16 @@ public class Product : BaseEntity
     {
         Stock += quantity;
     }
-    
+
+    public void Activate()
+    {
+        IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+        IsActive = false;
+    }
+
     private Product() {}
 }
