@@ -20,9 +20,9 @@ public class GetProductsByCategoryHandler : IRequestHandler<GetProductsByCategor
     {
         var query = _context.Products.AsQueryable();
 
-        query = Guid.TryParse(request.CategoryIdOrSlug, out var categoryId)
+        query = Guid.TryParse(request.IdOrSlug, out var categoryId)
             ? query.Where(p => p.Categories.Any(c => c.Id == new CategoryId(categoryId)))
-            : query.Where(p => p.Categories.Any(c => c.Slug == request.CategoryIdOrSlug));
+            : query.Where(p => p.Categories.Any(c => c.Slug == request.IdOrSlug));
         
         var sortBy = request.SortBy?.ToLower();
         var orderBy = request.OrderBy?.ToLower();

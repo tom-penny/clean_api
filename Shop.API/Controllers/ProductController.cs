@@ -48,6 +48,26 @@ public class ProductController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("/api/categories/{idOrSlug}/products")]
+    public async Task<IActionResult> GetProductsByCategory([FromRoute] string idOrSlug,
+        [FromQuery] GetAllProductsRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetProductsByCategoryQuery
+        {
+            IdOrSlug = idOrSlug,
+            SortBy = request.SortBy,
+            OrderBy = request.OrderBy,
+            Page = request.Page,
+            Size = request.Size
+        };
+        
+        var result = await _mediator.Send(query, cancellationToken);
+
+        var response = result.Value.ToResponse();
+        
+        return Ok(response);
+    }
+
     [Authorize(Policy = "RequireAdmin")]
     [HttpPost("/api/products")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request,

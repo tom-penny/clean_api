@@ -7,7 +7,7 @@ public class GetProductsByCategoryValidator : AbstractValidator<GetProductsByCat
     
     public GetProductsByCategoryValidator()
     {
-        RuleFor(q => q.CategoryIdOrSlug)
+        RuleFor(q => q.IdOrSlug)
             .NotEmpty();
         
         RuleFor(q => q.SortBy)
