@@ -17,8 +17,8 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     private readonly PostgreSqlContainer _container;
     private DbConnection _connection = default!;
     private Respawner _respawner = default!;
-    
-    public HttpClient HttpClient { get; private set; }
+
+    public HttpClient HttpClient { get; private set; } = default!;
 
     public ShopApiFactory()
     {
@@ -27,7 +27,7 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        base.ConfigureWebHost(builder);
+        // base.ConfigureWebHost(builder);
 
         builder.ConfigureServices(services =>
         {
@@ -39,8 +39,8 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
             services.AddDbContext<ApplicationDbContext>((provider, options) =>
             {
                 options.UseNpgsql(_container.GetConnectionString());
-                options.AddInterceptors(provider.GetRequiredService<OutboxInterceptor>());
-                options.EnableSensitiveDataLogging();
+                // options.AddInterceptors(provider.GetRequiredService<OutboxInterceptor>());
+                // options.EnableSensitiveDataLogging();
             });
         });
     }
@@ -58,6 +58,12 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
         HttpClient = CreateClient();
 
+        // using var scope = Services.CreateScope();
+        //
+        // var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        //
+        // await context.Database.EnsureCreatedAsync();
+
         await _connection.OpenAsync();
 
         _respawner = await Respawner.CreateAsync(_connection, new RespawnerOptions
@@ -71,6 +77,6 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         await _container.StopAsync();
         
-        _connection.Dispose();
+        // _connection.Dispose();
     }
 }
