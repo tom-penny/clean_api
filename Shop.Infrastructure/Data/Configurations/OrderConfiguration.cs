@@ -12,5 +12,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(e => e.CheckoutId).HasConversion(v => v.Value, v => new CheckoutId(v));
         builder.Property(e => e.UserId).HasConversion(v => v.Value, v => new UserId(v));
         builder.Property(e => e.PaymentId).HasConversion(v => v.Value, v => new PaymentId(v));
+        builder.HasIndex(e => e.UserId).HasDatabaseName("IDX_Order_UserId");
     }
 }
