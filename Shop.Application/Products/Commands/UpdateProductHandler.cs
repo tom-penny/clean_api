@@ -20,8 +20,10 @@ public class UpdateProductHandler : IRequestHandler<UpdateProductCommand, Result
 
         if (product == null) return Result.Fail(ProductError.NotFound(request.Id));
         
+        var categoryIds = request.CategoryIds.Select(id => new CategoryId(id));
+        
         var categories = await _context.Categories
-            .Where(c => request.CategoryIds.Contains(c.Id.Value))
+            .Where(c => categoryIds.Contains(c.Id))
             .ToListAsync(cancellationToken);
 
         product.Update(request.Name, request.Stock, request.Price, categories);

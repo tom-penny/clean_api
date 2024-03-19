@@ -14,8 +14,10 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Result
 
     public async Task<Result<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
+        var categoryIds = request.CategoryIds.Select(id => new CategoryId(id));
+        
         var categories = await _context.Categories
-            .Where(c => request.CategoryIds.Contains(c.Id.Value))
+            .Where(c => categoryIds.Contains(c.Id))
             .ToListAsync(cancellationToken);
 
         var product = new Product
