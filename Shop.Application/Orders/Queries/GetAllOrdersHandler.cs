@@ -18,7 +18,7 @@ public class GetAllOrdersHandler : IRequestHandler<GetAllOrdersQuery, Result<Pag
     
     public async Task<Result<PagedList<Order>>> Handle(GetAllOrdersQuery request, CancellationToken cancellationToken)
     {
-        var query = _context.Orders.AsQueryable();
+        var query = _context.Orders.Where(o => o.UserId == new UserId(request.UserId));
 
         var sortBy = request.SortBy?.ToLower();
         var orderBy = request.OrderBy?.ToLower();
@@ -31,7 +31,6 @@ public class GetAllOrdersHandler : IRequestHandler<GetAllOrdersQuery, Result<Pag
         }
         
         var orders = await query.Include(o => o.Items)
-            .Where(o => o.UserId == new UserId(request.UserId))
             .ToPagedListAsync(request.Page, request.Size, cancellationToken);
 
         return Result.Ok(orders);
