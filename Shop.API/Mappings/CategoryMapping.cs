@@ -10,7 +10,8 @@ public static class CategoryMapping
         return new CategoryResponse
         {
             Id = category.Id.Value.ToString(),
-            Name = category.Name
+            Name = category.Name,
+            Slug = category.Slug
         };
     }
 
