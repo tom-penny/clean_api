@@ -20,11 +20,6 @@ public abstract class TestBase : IAsyncLifetime
         _jwtProvider = factory.Services.GetRequiredService<IJwtProvider>();
     }
 
-    // protected string GenerateToken(string role)
-    // {
-    //     return _jwtProvider.GenerateToken(Guid.NewGuid(), "user@test.com", new List<string> { role });
-    // }
-
     protected void EnableAuthentication(string role)
     {
         var token = _jwtProvider.GenerateToken(Guid.NewGuid(), "user@test.com", new List<string> { role });

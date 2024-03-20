@@ -14,6 +14,7 @@ public static class ProductMapping
             Name = product.Name,
             Stock = product.Stock,
             Price = product.Price,
+            Created = product.Created,
             Categories = product.Categories.Select(c => c.ToResponse()).ToList()
         };
     }
