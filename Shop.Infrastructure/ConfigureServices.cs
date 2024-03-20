@@ -19,8 +19,6 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Register EF Core with Postgres database.
-
         services.AddSingleton<OutboxInterceptor>();
 
         services.AddDbContext<ApplicationDbContext>((provider, options) =>
@@ -32,24 +30,7 @@ public static class ConfigureServices
 
         services.AddScoped<IApplicationDbContext>(provider =>
             provider.GetRequiredService<ApplicationDbContext>());
-        
-        // services.AddMassTransit(cfg =>
-        // {
-        //     cfg.AddEntityFrameworkOutbox<ApplicationDbContext>(cfg =>
-        //     {
-        //         cfg.UsePostgres();
-        //         cfg.UseBusOutbox();
-        //     });
-        //
-        //     // x.AddConsumer<YourConsumer>();
-        //
-        //     cfg.UsingInMemory((context, cfg) =>
-        //     {
-        //         cfg.ConfigureEndpoints(context);
-        //         cfg.UseConsumeFilter(typeof(LoggingConsumeFilter<>), context);
-        //     });
-        // });
-        
+
         services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
@@ -86,6 +67,9 @@ public static class ConfigureServices
 
         services.AddHostedService<OutboxProcessor>();
         
+        services.AddScoped<UserSeeder>();
+        services.AddScoped<ApplicationDbSeeder>();
+
         return services;
     }
 }
