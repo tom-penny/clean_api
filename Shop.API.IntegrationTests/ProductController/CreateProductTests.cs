@@ -11,10 +11,10 @@ public class CreateProductTests : TestBase
     public CreateProductTests(ShopApiFactory factory) : base(factory)
     {
         _faker = new Faker<CreateProductRequest>()
-            .RuleFor(p => p.Name, f => f.Commerce.ProductName())
-            .RuleFor(p => p.Stock, f => f.Random.Int(1, 100))
-            .RuleFor(p => p.Price, f => f.Finance.Amount(1m, 100m))
-            .RuleFor(p => p.CategoryIds, _ => new List<Guid> { Guid.NewGuid() });
+            .RuleFor(r => r.Name, f => f.Commerce.ProductName())
+            .RuleFor(r => r.Stock, f => f.Random.Int(1, 100))
+            .RuleFor(r => r.Price, f => f.Finance.Amount(1m, 100m))
+            .RuleFor(r => r.CategoryIds, new List<Guid> { Guid.NewGuid() });
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class CreateProductTests : TestBase
     {
         EnableAuthentication("Admin");
 
-        var request = _faker.Clone().RuleFor(p => p.Name, "").Generate();
+        var request = _faker.Clone().RuleFor(r => r.Name, "").Generate();
         
         var response = await Client.PostAsJsonAsync("/api/products", request);
 
@@ -49,7 +49,7 @@ public class CreateProductTests : TestBase
     {
         EnableAuthentication("Admin");
 
-        var request = _faker.Clone().RuleFor(p => p.Stock, -1).Generate();
+        var request = _faker.Clone().RuleFor(r => r.Stock, -1).Generate();
         
         var response = await Client.PostAsJsonAsync("/api/products", request);
 
@@ -61,7 +61,7 @@ public class CreateProductTests : TestBase
     {
         EnableAuthentication("Admin");
 
-        var request = _faker.Clone().RuleFor(p => p.Price, decimal.Zero).Generate();
+        var request = _faker.Clone().RuleFor(r => r.Price, decimal.Zero).Generate();
         
         var response = await Client.PostAsJsonAsync("/api/products", request);
         
