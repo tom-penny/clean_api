@@ -48,31 +48,43 @@ Following Clean Architecture principles, Shop API is structured into concentric 
 
 1. Clone the repository:
 
-    ```git clone https://github.com/w1855014/shop-backend.git```
+    ```
+    git clone https://github.com/w1855014/shop-backend.git
+    ```
 
 2. Install dependencies from the solution directory:
 
-    ```dotnet restore```
+    ```
+    dotnet restore
+    ```
 
 3. Configure the PostgreSQL connection string in appsettings.json.
 
 4. Run the application from the solution directory:
 
-    ```dotnet run Shop.API```
+    ```
+    dotnet run Shop.API
+    ```
 
 ### Testing
 
 - Run `Shop.Application.UnitTests` from the solution directory:
 
-    ```dotnet test Shop.Application.UnitTests```
+    ```
+    dotnet test Shop.Application.UnitTests
+    ```
 
 - Run `Shop.Domain.UnitTests` from the solution directory:
 
-    ```dotnet test Shop.Domain.UnitTests```
+    ```
+    dotnet test Shop.Domain.UnitTests
+    ```
 
 - Run `Shop.API.InfrastructureTests` from the solution directory:
 
-    ```dotnet test Shop.API.InfrastructureTests```
+    ```
+    dotnet test Shop.API.InfrastructureTests
+    ```
 
 ## Technologies
 
