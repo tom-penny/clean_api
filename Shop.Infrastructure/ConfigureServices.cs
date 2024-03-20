@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
@@ -40,8 +41,20 @@ public static class ConfigureServices
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-        .AddJwtBearer();
-
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+            };
+        });
+        
         services.AddAuthorization(options =>
         {
             options.AddPolicy("ResourceAccess", policy =>
@@ -53,7 +66,6 @@ public static class ConfigureServices
         services.AddSingleton<IAuthorizationHandler, OwnerAuthorizationHandler>();
         
         services.ConfigureOptions<JwtOptionsConfiguration>();
-        services.ConfigureOptions<JwtBearerOptionsConfiguration>();
         services.ConfigureOptions<EmailOptionsConfiguration>();
 
         services.AddScoped<IUserService, UserService>();

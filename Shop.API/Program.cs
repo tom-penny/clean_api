@@ -1,8 +1,9 @@
 using Shop.API;
+using Shop.API.Middleware;
 using Shop.Application;
 using Shop.Infrastructure;
 using Shop.Infrastructure.Data;
-using Shop.API.Middleware;
+using Shop.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +22,12 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.EnsureDeleted();
+    // db.Database.EnsureDeleted();
     db.Database.EnsureCreated();
+
+    var userSeeder = scope.ServiceProvider.GetRequiredService<UserSeeder>();
+
+    await userSeeder.SeedAsync();
 }
 
 // Configure the HTTP request pipeline.
@@ -37,6 +42,7 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<AuthorizationExceptionMiddleware>();
@@ -46,3 +52,5 @@ app.UseMiddleware<UnhandledExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
