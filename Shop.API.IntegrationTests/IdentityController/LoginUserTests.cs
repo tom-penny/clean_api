@@ -1,9 +1,7 @@
 namespace Shop.API.IntegrationTests.IdentityController;
 
 using API.Models.Requests;
-using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class LoginUserTests : TestBase
 {
     private readonly Faker<RegisterUserRequest> _faker;
@@ -11,23 +9,18 @@ public class LoginUserTests : TestBase
     public LoginUserTests(ShopApiFactory factory) : base(factory)
     {
         _faker = new Faker<RegisterUserRequest>()
-            .RuleFor(r => r.FirstName, f => f.Person.FirstName)
-            .RuleFor(r => r.LastName, f => f.Person.LastName)
-            .RuleFor(r => r.Email, f => "bla@test.com")
-            .RuleFor(r => r.Password, f => "Abc123!");
+            .RuleFor(r => r.FirstName, f => f.Name.FirstName())
+            .RuleFor(r => r.LastName, f => f.Name.LastName())
+            .RuleFor(r => r.Email, f => f.Internet.Email())
+            .RuleFor(r => r.Password, _ => "Abc123!");
     }
 
     [Fact]
     public async Task Login_ShouldReturn200_WhenRequestValid()
     {
-        var registerRequest = _faker.Generate();
+        var request = _faker.Generate();
         
-        await Client.PostAsJsonAsync("/api/auth/register", registerRequest);
-
-        var request = new Faker<LoginUserRequest>()
-            .RuleFor(r => r.Email, _ => registerRequest.Email)
-            .RuleFor(r => r.Password, _ => registerRequest.Password)
-            .Generate();
+        await Client.PostAsJsonAsync("/api/auth/register", request);
 
         var response = await Client.PostAsJsonAsync("/api/auth/login", request);
         

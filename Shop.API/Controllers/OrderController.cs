@@ -21,7 +21,7 @@ public class OrderController : ControllerBase
 
     [Authorize(Policy = "RequireLogin")]
     [HttpGet("/api/users/{userId}/orders")]
-    public async Task<IActionResult> GetAllOrders([FromRoute] Guid userId, [FromBody] GetAllOrdersRequest request,
+    public async Task<IActionResult> GetAllOrders([FromRoute] Guid userId, [FromQuery] GetAllOrdersRequest request,
         CancellationToken cancellationToken)
     {
         var query = new GetAllOrdersQuery
@@ -78,6 +78,6 @@ public class OrderController : ControllerBase
         
         var order = result.Value.ToResponse();
 
-        return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+        return CreatedAtAction(nameof(GetOrder), new { userId = order.UserId, orderId = order.Id }, order);
     }
 }

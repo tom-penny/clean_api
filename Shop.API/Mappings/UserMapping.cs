@@ -13,6 +13,7 @@ public static class UserMapping
             Id = user.Id.Value.ToString(),
             FirstName = user.FirstName,
             LastName = user.LastName,
+            Email = user.Email,
             Joined = user.Joined
         };
     }

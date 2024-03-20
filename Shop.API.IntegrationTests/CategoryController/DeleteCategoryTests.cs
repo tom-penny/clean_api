@@ -1,33 +1,20 @@
 namespace Shop.API.IntegrationTests.CategoryController;
 
+using API.Mappings;
 using API.Models.Requests;
-using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class DeleteCategoryTests : TestBase
 {
-    private readonly Faker<CreateCategoryRequest> _faker;
-
-    public DeleteCategoryTests(ShopApiFactory factory) : base(factory)
-    {
-        _faker = new Faker<CreateCategoryRequest>()
-            .RuleFor(r => r.Name, f => f.Commerce.Categories(1).First());
-    }
+    public DeleteCategoryTests(ShopApiFactory factory) : base(factory) { }
 
     [Fact]
     public async Task DeleteCategory_ShouldReturn204_WhenRequestValid()
     {
         EnableAuthentication("Admin");
-        
-        var createRequest = _faker.Generate();
 
-        var createResponse = await Client.PostAsJsonAsync("/api/categories", createRequest);
+        var category = (await DataFactory.CreateCategoryAsync()).ToResponse();
 
-        createResponse.EnsureSuccessStatusCode();
-        
-        var createdCategory = await createResponse.Content.ReadFromJsonAsync<CategoryResponse>();
-
-        var response = await Client.DeleteAsync($"/api/categories/{createdCategory!.Id}");
+        var response = await Client.DeleteAsync($"/api/categories/{category.Id}");
 
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }

@@ -30,7 +30,7 @@ public class GetAllUsersHandler : IRequestHandler<GetAllUsersQuery, Result<Paged
                 : query.OrderBy(GetSortExpression(sortBy));
         }
         
-        var users = await _context.Users.ToPagedListAsync(request.Page, request.Size, cancellationToken);
+        var users = await query.ToPagedListAsync(request.Page, request.Size, cancellationToken);
         
         return Result.Ok(users);
     }

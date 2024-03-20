@@ -30,7 +30,7 @@ public class GetAllOrdersHandler : IRequestHandler<GetAllOrdersQuery, Result<Pag
                 : query.OrderBy(GetSortExpression(sortBy));
         }
         
-        var orders = await _context.Orders.Include(o => o.Items)
+        var orders = await query.Include(o => o.Items)
             .Where(o => o.UserId == new UserId(request.UserId))
             .ToPagedListAsync(request.Page, request.Size, cancellationToken);
 

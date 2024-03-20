@@ -1,38 +1,25 @@
 namespace Shop.API.IntegrationTests.CategoryController;
 
-using API.Models.Requests;
+using API.Mappings;
 using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class GetCategoryTests : TestBase
 {
-    private readonly Faker<CreateCategoryRequest> _faker;
-
-    public GetCategoryTests(ShopApiFactory factory) : base(factory)
-    {
-        _faker = new Faker<CreateCategoryRequest>()
-            .RuleFor(r => r.Name, f => f.Commerce.Categories(1).First());
-    }
+    public GetCategoryTests(ShopApiFactory factory) : base(factory) { }
 
     [Fact]
     public async Task GetCategory_ShouldReturn200_WhenRequestValid()
     {
         EnableAuthentication("Admin");
 
-        var createRequest = _faker.Generate();
+        var category = (await DataFactory.CreateCategoryAsync()).ToResponse();
         
-        var createResponse = await Client.PostAsJsonAsync("/api/categories", createRequest);
-
-        createResponse.EnsureSuccessStatusCode();
-
-        var createdCategory = await createResponse.Content.ReadFromJsonAsync<CategoryResponse>();
-
-        var response = await Client.GetAsync($"/api/categories/{createdCategory!.Id}");
+        var response = await Client.GetAsync($"/api/categories/{category.Id}");
 
         var body = await response.Content.ReadFromJsonAsync<CategoryResponse>();
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body.Should().BeEquivalentTo(createdCategory);
+        body.Should().BeEquivalentTo(category);
     }
 
     [Fact]

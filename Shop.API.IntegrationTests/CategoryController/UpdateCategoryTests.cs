@@ -1,9 +1,8 @@
 namespace Shop.API.IntegrationTests.CategoryController;
 
+using API.Mappings;
 using API.Models.Requests;
-using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class UpdateCategoryTests : TestBase
 {
     private readonly Faker<UpdateCategoryRequest> _faker;
@@ -18,18 +17,12 @@ public class UpdateCategoryTests : TestBase
     public async Task UpdateCategory_ShouldReturn200_WhenRequestValid()
     {
         EnableAuthentication("Admin");
+
+        var category = (await DataFactory.CreateCategoryAsync()).ToResponse();
         
-        var createRequest = _faker.Generate();
-        
-        var createResponse = await Client.PostAsJsonAsync("/api/categories", createRequest);
-
-        createResponse.EnsureSuccessStatusCode();
-
-        var createdCategory = await createResponse.Content.ReadFromJsonAsync<CategoryResponse>();
-
         var request = _faker.Generate();
 
-        var response = await Client.PutAsJsonAsync($"/api/categories/{createdCategory!.Id}", request);
+        var response = await Client.PutAsJsonAsync($"/api/categories/{category.Id}", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
@@ -75,17 +68,11 @@ public class UpdateCategoryTests : TestBase
     {
         EnableAuthentication("Admin");
 
-        var createRequest = _faker.Generate();
+        var category = (await DataFactory.CreateCategoryAsync()).ToResponse();
         
-        var createResponse = await Client.PostAsJsonAsync("/api/categories", createRequest);
+        var request = _faker.Clone().RuleFor(r => r.Name, category.Name).Generate();
 
-        createResponse.EnsureSuccessStatusCode();
-        
-        var createdCategory = await createResponse.Content.ReadFromJsonAsync<CategoryResponse>();
-
-        var request = _faker.Clone().RuleFor(r => r.Name, createRequest.Name).Generate();
-
-        var response = await Client.PutAsJsonAsync($"/api/categories/{createdCategory!.Id}", request);
+        var response = await Client.PutAsJsonAsync($"/api/categories/{category.Id}", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
     }

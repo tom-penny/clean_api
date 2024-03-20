@@ -3,7 +3,6 @@ namespace Shop.API.IntegrationTests.CategoryController;
 using API.Models.Requests;
 using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class CreateCategoryTests : TestBase
 {
     private readonly Faker<CreateCategoryRequest> _faker;
@@ -11,7 +10,7 @@ public class CreateCategoryTests : TestBase
     public CreateCategoryTests(ShopApiFactory factory) : base(factory)
     {
         _faker = new Faker<CreateCategoryRequest>()
-            .RuleFor(r => r.Name, f => f.Commerce.Categories(1).First());
+            .RuleFor(r => r.Name, f => f.Commerce.Department());
     }
 
     [Fact]
@@ -46,13 +45,9 @@ public class CreateCategoryTests : TestBase
     {
         EnableAuthentication("Admin");
 
-        var createRequest = _faker.Generate();
-        
-        var createResponse = await Client.PostAsJsonAsync("/api/categories", createRequest);
+        var createdCategory = await DataFactory.CreateCategoryAsync();
 
-        createResponse.EnsureSuccessStatusCode();
-
-        var request = _faker.Clone().RuleFor(r => r.Name, createRequest.Name).Generate();
+        var request = _faker.Clone().RuleFor(r => r.Name, createdCategory.Name).Generate();
 
         var response = await Client.PostAsJsonAsync("/api/categories", request);
 
