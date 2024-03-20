@@ -36,9 +36,9 @@ public class CategoryController : ControllerBase
         
         var result = await _mediator.Send(query, cancellationToken);
         
-        var categories = result.Value.Select(o => o.ToResponse()).ToList();
+        var response = result.Value.ToResponse();
         
-        return Ok(new { categories });
+        return Ok(response);
     }
     
     [Authorize(Policy = "RequireAdmin")]
