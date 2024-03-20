@@ -7,10 +7,9 @@ using Outbox;
 using Domain.Entities;
 using Application.Common.Interfaces;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>, IApplicationDbContext
+public class ApplicationDbContext : IdentityDbContext<IdentityUser<Guid>,
+    IdentityRole<Guid>, Guid>, IApplicationDbContext
 {
-    private readonly IMediator _mediator;
-    
     public DbSet<Category> Categories { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
@@ -21,38 +20,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser<Guid>, Identi
     
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator) : base(options)
-    {
-        _mediator = mediator;
-    }
-
-    // public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new ())
-    // {
-    //     var domainEntities = ChangeTracker.Entries<BaseEntity>()
-    //         .Where(e => e.Entity.Events.Any()).ToList();
-    //     
-    //     // Retrieve domain events for updated entities.
-    //
-    //     var domainEvents = domainEntities.SelectMany(e => e.Entity.Events).ToList();
-    //     
-    //     // Clear domain events for updated entities.
-    //
-    //     domainEntities.ForEach(e => e.Entity.ClearDomainEvents());
-    //     
-    //     var result = await base.SaveChangesAsync(cancellationToken);
-    //     
-    //     // Publish domain events after changes persisted.
-    //     
-    //     foreach (var domainEvent in domainEvents)
-    //     {
-    //         await _mediator.Publish(domainEvent, cancellationToken);
-    //     }
-    //     
-    //     // domainEntities.ForEach(e => e.Entity.ClearDomainEvents());
-    //     
-    //     return result;
-    // }
-
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
@@ -98,9 +67,5 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser<Guid>, Identi
         });
         
         base.OnModelCreating(modelBuilder);
-        
-        // modelBuilder.AddInboxStateEntity();
-        // modelBuilder.AddOutboxStateEntity();
-        // modelBuilder.AddOutboxMessageEntity();
     }
 }
