@@ -30,7 +30,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="IdentityController\" />
       <Folder Include="OrderController\" />
       <Folder Include="PaymentController\" />
       <Folder Include="ShipmentController\" />
