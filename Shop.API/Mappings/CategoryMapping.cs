@@ -13,4 +13,12 @@ public static class CategoryMapping
             Name = category.Name
         };
     }
+
+    public static CategoriesResponse ToResponse<T>(this IEnumerable<T> list) where T : Category
+    {
+        return new CategoriesResponse
+        {
+            Categories = list.Select(c => c.ToResponse()).ToList()
+        };
+    }
 }
