@@ -1,0 +1,19 @@
+replicaCount: 1
+image:
+  repository: europe-west2-docker.pkg.dev/ecommerce-ef8ca/images/api
+  tag: latest
+service:
+  type: LoadBalancer
+  port: 8000
+environment:
+  PORT: 8000
+  ASPNETCORE_URLS: http://*:8000
+jwt:
+  KEY: c2a5fdf4dfb84abaaf049131e6fba60c
+  AUDIENCE: audience
+  ISSUER: issuer
+smtp:
+  HOST: sandbox.smtp.mailtrap.io
+  PORT: 465
+  SENDER: 0a74e6a88fc597
+  PASSWORD: 7e8bd13c1f5616
