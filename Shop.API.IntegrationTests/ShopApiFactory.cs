@@ -77,6 +77,6 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         await _container.StopAsync();
         
-        // _connection.Dispose();
+        _connection.Dispose();
     }
 }
