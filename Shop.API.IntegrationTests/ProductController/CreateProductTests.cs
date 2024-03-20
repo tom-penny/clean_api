@@ -3,7 +3,6 @@ namespace Shop.API.IntegrationTests.ProductController;
 using API.Models.Requests;
 using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class CreateProductTests : TestBase
 {
     private readonly Faker<CreateProductRequest> _faker;

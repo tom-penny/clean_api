@@ -28,6 +28,10 @@ using (var scope = app.Services.CreateScope())
     var userSeeder = scope.ServiceProvider.GetRequiredService<UserSeeder>();
 
     await userSeeder.SeedAsync();
+
+    var dataSeeder = scope.ServiceProvider.GetRequiredService<ApplicationDbSeeder>();
+
+    await dataSeeder.SeedAsync();
 }
 
 // Configure the HTTP request pipeline.

@@ -1,9 +1,7 @@
 namespace Shop.API.IntegrationTests.IdentityController;
 
 using API.Models.Requests;
-using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class RegisterUserTests : TestBase
 {
     private readonly Faker<RegisterUserRequest> _faker;
@@ -11,10 +9,10 @@ public class RegisterUserTests : TestBase
     public RegisterUserTests(ShopApiFactory factory) : base(factory)
     {
         _faker = new Faker<RegisterUserRequest>()
-            .RuleFor(r => r.FirstName, f => f.Person.FirstName)
-            .RuleFor(r => r.LastName, f => f.Person.LastName)
-            .RuleFor(r => r.Email, f => "bla@test.com")
-            .RuleFor(r => r.Password, f => "Abc123!");
+            .RuleFor(r => r.FirstName, f => f.Name.FirstName())
+            .RuleFor(r => r.LastName, f => f.Name.LastName())
+            .RuleFor(r => r.Email, f => f.Internet.Email())
+            .RuleFor(r => r.Password, _ => "Abc123!");
     }
 
     [Fact]

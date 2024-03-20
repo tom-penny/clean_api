@@ -1,41 +1,25 @@
 namespace Shop.API.IntegrationTests.ProductController;
 
-using API.Models.Requests;
+using API.Mappings;
 using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class GetProductTests : TestBase
 {
-    private readonly Faker<CreateProductRequest> _faker;
-
-    public GetProductTests(ShopApiFactory factory) : base(factory)
-    {
-        _faker = new Faker<CreateProductRequest>()
-            .RuleFor(r => r.Name, f => f.Commerce.ProductName())
-            .RuleFor(r => r.Stock, f => f.Random.Int(1, 100))
-            .RuleFor(r => r.Price, f => f.Finance.Amount(1m, 100m))
-            .RuleFor(r => r.CategoryIds, new List<Guid> { Guid.NewGuid() });
-    }
+    public GetProductTests(ShopApiFactory factory) : base(factory) { }
 
     [Fact]
     public async Task GetProduct_ShouldReturn200_WhenRequestValid()
     {
         EnableAuthentication("Admin");
 
-        var createRequest = _faker.Generate();
+        var product = (await DataFactory.CreateProductAsync()).ToResponse();
         
-        var createResponse = await Client.PostAsJsonAsync("/api/products", createRequest);
-        
-        createResponse.EnsureSuccessStatusCode();
-
-        var createdProduct = await createResponse.Content.ReadFromJsonAsync<ProductResponse>();
-
-        var response = await Client.GetAsync($"/api/products/{createdProduct!.Id}");
+        var response = await Client.GetAsync($"/api/products/{product.Id}");
 
         var body = await response.Content.ReadFromJsonAsync<ProductResponse>();
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body.Should().BeEquivalentTo(createdProduct);
+        body.Should().BeEquivalentTo(product);
     }
 
     [Fact]

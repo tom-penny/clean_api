@@ -1,33 +1,23 @@
 namespace Shop.API.IntegrationTests.ProductController;
 
-using API.Models.Requests;
+using API.Mappings;
 using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class GetAllProductsTests : TestBase
 {
-    private readonly Faker<CreateProductRequest> _faker;
-
-    public GetAllProductsTests(ShopApiFactory factory) : base(factory)
-    {
-        _faker = new Faker<CreateProductRequest>()
-            .RuleFor(r => r.Name, f => f.Commerce.ProductName())
-            .RuleFor(r => r.Stock, f => f.Random.Int(1, 100))
-            .RuleFor(r => r.Price, f => f.Finance.Amount(1m, 100m))
-            .RuleFor(r => r.CategoryIds, new List<Guid> { Guid.NewGuid() });
-    }
+    public GetAllProductsTests(ShopApiFactory factory) : base(factory) { }
 
     [Fact]
     public async Task GetAllProducts_ShouldReturn200_WhenRequestValid()
     {
-        var createdProducts = await CreateProductsAsync(5);
-
+        var products = (await DataFactory.CreateProductsAsync(5)).Select(p => p.ToResponse());
+        
         var response = await Client.GetAsync("/api/products");
 
         var body = await response.Content.ReadFromJsonAsync<ProductsResponse>();
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body!.Products.Should().BeEquivalentTo(createdProducts);
+        body!.Products.Should().BeEquivalentTo(products);
     }
 
     [Fact]
@@ -73,19 +63,19 @@ public class GetAllProductsTests : TestBase
     [InlineData("date", "desc")]
     public async Task GetAllProducts_ShouldSortResults_WhenQueryValid(string sortBy, string orderBy)
     {
-        var createdProducts = await CreateProductsAsync(5);
-
+        var products = (await DataFactory.CreateProductsAsync(5)).Select(p => p.ToResponse());
+        
         var sortedProducts = sortBy switch
         {
             "name" => orderBy == "asc"
-                ? createdProducts.OrderBy(p => p.Name).ToList()
-                : createdProducts.OrderByDescending(p => p.Name).ToList(),
+                ? products.OrderBy(p => p.Name)
+                : products.OrderByDescending(p => p.Name),
             "price" => orderBy == "asc"
-                ? createdProducts.OrderBy(p => p.Price).ToList()
-                : createdProducts.OrderByDescending(p => p.Price).ToList(),
+                ? products.OrderBy(p => p.Price)
+                : products.OrderByDescending(p => p.Price),
             "date" => orderBy == "asc"
-                ? createdProducts.OrderBy(p => p.Created).ToList()
-                : createdProducts.OrderByDescending(p => p.Created).ToList(),
+                ? products.OrderBy(p => p.Created)
+                : products.OrderByDescending(p => p.Created),
             _ => throw new ArgumentException()
         };
 
@@ -97,25 +87,20 @@ public class GetAllProductsTests : TestBase
         body!.Products.Should().BeEquivalentTo(sortedProducts, o => o.WithStrictOrdering());
     }
 
-    private async Task<List<ProductResponse>> CreateProductsAsync(int count)
+    [Theory]
+    [InlineData(1, 5)]
+    [InlineData(2, 3)]
+    public async Task GetAllProducts_ShouldPaginateResults_WhenQueryValid(int page, int size)
     {
-        EnableAuthentication("Admin");
+        await DataFactory.CreateProductsAsync(10);
+        
+        var response = await Client.GetAsync($"/api/products?page={page}&size={size}");
 
-        var products = new List<ProductResponse>();
+        var body = await response.Content.ReadFromJsonAsync<ProductsResponse>();
         
-        for (var i = 0; i < count; i++)
-        {
-            var createRequest = _faker.Generate();
-            
-            var createResponse = await Client.PostAsJsonAsync("/api/products", createRequest);
-            
-            createResponse.EnsureSuccessStatusCode();
-            
-            var createdProduct = await createResponse.Content.ReadFromJsonAsync<ProductResponse>();
-            
-            products.Add(createdProduct!);
-        }
-        
-        return products;
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        body!.Products.Count.Should().Be(size);
+        body.HasNextPage.Should().Be(page * size < 10);
+        body.HasPreviousPage.Should().Be(page > 1);
     }
 }

@@ -12,9 +12,10 @@ public static class OrderMapper
         {
             Id = order.Id.Value.ToString(),
             CheckoutId = order.CheckoutId.Value,
-            UserId = order.UserId.ToString(),
+            UserId = order.UserId.Value.ToString(),
             Status = order.Status.ToString(),
             Amount = order.Amount,
+            Created = order.Created,
             Items = order.Items.Select(i => i.ToResponse()).ToList(),
             PaymentId = order.PaymentId?.Value.ToString()
         };

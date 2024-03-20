@@ -33,7 +33,7 @@ public class ApplicationDbSeeder
             .CustomInstantiator(f => new Category
             (
                 id: new CategoryId(Guid.NewGuid()),
-                name: f.Commerce.Categories(1).First()
+                name: f.Commerce.Department()
             ))
             .Generate(10);
 
@@ -177,6 +177,8 @@ public class ApplicationDbSeeder
             OrderStatus.Processing
         };
 
+        var today = DateTime.UtcNow;
+
         var faker = new Faker();
 
         var orders = _context.Orders.Where(o =>
@@ -184,7 +186,7 @@ public class ApplicationDbSeeder
 
         foreach (var order in orders)
         {
-            var dispatched = faker.Date.Recent(20);
+            var dispatched = faker.Date.Between(today.AddDays(-20), today);
 
             var shipment = new Shipment
             (
@@ -196,7 +198,7 @@ public class ApplicationDbSeeder
 
             if (order.Status == OrderStatus.Completed)
             {
-                shipment.SetDeliveryDate(faker.Date.Between(dispatched, DateTime.Now));
+                shipment.SetDeliveryDate(faker.Date.Between(today.AddDays(-20), today));
             }
 
             _context.Shipments.Add(shipment);

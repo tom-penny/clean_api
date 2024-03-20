@@ -11,7 +11,7 @@ public static class OrderItemMapper
         {
             Id = item.Id.Value.ToString(),
             OrderId = item.OrderId.Value.ToString(),
-            ProductId = item.ProductId.ToString(),
+            ProductId = item.ProductId.Value.ToString(),
             Quantity = item.Quantity,
             UnitPrice = item.UnitPrice
         };

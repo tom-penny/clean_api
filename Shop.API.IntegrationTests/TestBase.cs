@@ -1,21 +1,22 @@
-using System.Net.Http.Headers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Shop.API.IntegrationTests;
 
-using Infrastructure.Authentication;
 using Application.Common.Interfaces;
 
+[Collection("TestCollection")]
 public abstract class TestBase : IAsyncLifetime
 {
     private readonly Func<Task> _resetDatabase;
     private readonly IJwtProvider _jwtProvider;
     
-    protected HttpClient Client { get; set; }
+    protected HttpClient Client { get; }
+    protected TestDataFactory DataFactory { get; }
 
     protected TestBase(ShopApiFactory factory)
     {
         Client = factory.CreateClient();
+        DataFactory = new TestDataFactory(factory.Context);
         _resetDatabase = factory.ResetDatabaseAsync;
         _jwtProvider = factory.Services.GetRequiredService<IJwtProvider>();
     }

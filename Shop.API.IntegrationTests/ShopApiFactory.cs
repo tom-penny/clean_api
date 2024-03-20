@@ -1,6 +1,7 @@
 using System.Data.Common;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
@@ -18,8 +19,8 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     private DbConnection _connection = default!;
     private Respawner _respawner = default!;
 
-    public HttpClient HttpClient { get; private set; } = default!;
-
+    public ApplicationDbContext Context { get; private set; } = default!;
+    
     public ShopApiFactory()
     {
         _container = new PostgreSqlBuilder().Build();
@@ -27,21 +28,24 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        // base.ConfigureWebHost(builder);
-
-        builder.ConfigureServices(services =>
+        builder.ConfigureTestServices(services =>
         {
             var descriptor = services.SingleOrDefault(d =>
                 d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
 
             if (descriptor != null) services.Remove(descriptor);
             
-            services.AddDbContext<ApplicationDbContext>((provider, options) =>
+            services.AddDbContext<ApplicationDbContext>((options) =>
             {
                 options.UseNpgsql(_container.GetConnectionString());
                 // options.AddInterceptors(provider.GetRequiredService<OutboxInterceptor>());
-                // options.EnableSensitiveDataLogging();
             });
+
+            using var scope = services.BuildServiceProvider().CreateScope();
+            
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            
+            context.Database.EnsureCreated();
         });
     }
 
@@ -54,16 +58,10 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         await _container.StartAsync();
 
-        _connection = new NpgsqlConnection(_container.GetConnectionString());
+        Context = Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        HttpClient = CreateClient();
-
-        // using var scope = Services.CreateScope();
-        //
-        // var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        //
-        // await context.Database.EnsureCreatedAsync();
-
+        _connection = Context.Database.GetDbConnection();
+        
         await _connection.OpenAsync();
 
         _respawner = await Respawner.CreateAsync(_connection, new RespawnerOptions
@@ -77,6 +75,6 @@ public class ShopApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         await _container.StopAsync();
         
-        _connection.Dispose();
+        await _connection.DisposeAsync();
     }
 }

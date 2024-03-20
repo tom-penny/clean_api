@@ -1,6 +1,11 @@
 namespace Shop.API.Models.Requests;
 
-public record OrderItemRequest(Guid ProductId, int Quantity, decimal UnitPrice);
+public class OrderItemRequest
+{
+    public required Guid ProductId { get; init; }
+    public required int Quantity { get; init; }
+    public required decimal UnitPrice { get; init; }
+};
 
 public class CreateOrderRequest
 {

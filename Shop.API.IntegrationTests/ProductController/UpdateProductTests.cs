@@ -1,9 +1,8 @@
 namespace Shop.API.IntegrationTests.ProductController;
 
+using API.Mappings;
 using API.Models.Requests;
-using API.Models.Responses;
 
-[Collection("TestCollection")]
 public class UpdateProductTests : TestBase
 {
     private readonly Faker<UpdateProductRequest> _faker;
@@ -21,18 +20,12 @@ public class UpdateProductTests : TestBase
     public async Task UpdateProduct_ShouldReturn200_WhenRequestValid()
     {
         EnableAuthentication("Admin");
-        
-        var createRequest = _faker.Generate();
-        
-        var createResponse = await Client.PostAsJsonAsync("/api/products", createRequest);
-        
-        createResponse.EnsureSuccessStatusCode();
 
-        var createdProduct = await createResponse.Content.ReadFromJsonAsync<ProductResponse>();
+        var product = (await DataFactory.CreateProductAsync()).ToResponse();
 
         var request = _faker.Generate();
 
-        var response = await Client.PutAsJsonAsync($"/api/products/{createdProduct!.Id}", request);
+        var response = await Client.PutAsJsonAsync($"/api/products/{product.Id}", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
