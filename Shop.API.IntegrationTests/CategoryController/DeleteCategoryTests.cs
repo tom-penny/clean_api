@@ -11,7 +11,7 @@ public class DeleteCategoryTests : TestBase
     public DeleteCategoryTests(ShopApiFactory factory) : base(factory)
     {
         _faker = new Faker<CreateCategoryRequest>()
-            .RuleFor(c => c.Name, f => f.Commerce.Categories(1).First());
+            .RuleFor(r => r.Name, f => f.Commerce.Categories(1).First());
     }
 
     [Fact]
@@ -21,7 +21,9 @@ public class DeleteCategoryTests : TestBase
         
         var createRequest = _faker.Generate();
 
-        var createResponse = await Client.PostAsJsonAsync("/api/categories", createRequest); 
+        var createResponse = await Client.PostAsJsonAsync("/api/categories", createRequest);
+
+        createResponse.EnsureSuccessStatusCode();
         
         var createdCategory = await createResponse.Content.ReadFromJsonAsync<CategoryResponse>();
 

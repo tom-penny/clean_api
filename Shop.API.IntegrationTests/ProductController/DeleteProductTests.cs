@@ -11,10 +11,10 @@ public class DeleteProductTests : TestBase
     public DeleteProductTests(ShopApiFactory factory) : base(factory)
     {
         _faker = new Faker<CreateProductRequest>()
-            .RuleFor(p => p.Name, f => f.Commerce.ProductName())
-            .RuleFor(p => p.Stock, f => f.Random.Int(1, 100))
-            .RuleFor(p => p.Price, f => f.Finance.Amount(1m, 100m))
-            .RuleFor(p => p.CategoryIds, _ => new List<Guid> { Guid.NewGuid() });
+            .RuleFor(r => r.Name, f => f.Commerce.ProductName())
+            .RuleFor(r => r.Stock, f => f.Random.Int(1, 100))
+            .RuleFor(r => r.Price, f => f.Finance.Amount(1m, 100m))
+            .RuleFor(r => r.CategoryIds, new List<Guid> { Guid.NewGuid() });
     }
 
     [Fact]
@@ -24,8 +24,10 @@ public class DeleteProductTests : TestBase
         
         var createRequest = _faker.Generate();
 
-        var createResponse = await Client.PostAsJsonAsync("/api/products", createRequest); 
+        var createResponse = await Client.PostAsJsonAsync("/api/products", createRequest);
         
+        createResponse.EnsureSuccessStatusCode();
+
         var createdProduct = await createResponse.Content.ReadFromJsonAsync<ProductResponse>();
 
         var response = await Client.DeleteAsync($"/api/products/{createdProduct!.Id}");
