@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Shop.API.Controllers;
 
@@ -32,8 +33,18 @@ public class IdentityController : ControllerBase
         };
 
         var result = await _mediator.Send(command, cancellationToken);
+
+        if (!result.IsSuccess) return result.ToProblem();
+
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.UtcNow.AddDays(7)
+        };
         
-        return result.IsSuccess ? Ok(new { token = result.Value }) : result.ToProblem();
+        Response.Cookies.Append("token", result.Value, cookieOptions);
+
+        return Ok();
     }
     
     [HttpGet("/api/auth/verify")]
@@ -63,7 +74,17 @@ public class IdentityController : ControllerBase
         
         var result = await _mediator.Send(command, cancellationToken);
         
-        return result.IsSuccess ? Ok(new { token = result.Value }) : result.ToProblem();
+        if (!result.IsSuccess) return result.ToProblem();
+
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.UtcNow.AddDays(7)
+        };
+        
+        Response.Cookies.Append("token", result.Value, cookieOptions);
+
+        return Ok();
     }
 
     [HttpPost("/api/auth/logout")]
@@ -74,6 +95,21 @@ public class IdentityController : ControllerBase
         var result = await _mediator.Send(command, cancellationToken);
 
         return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+
+    [Authorize(Policy = "RequireLogin")]
+    [HttpGet("/api/auth/me")]
+    public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
+    {
+        var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var userId = Guid.TryParse(claim, out var guid) ? guid : Guid.Empty;
+
+        var query = new GetUserByIdQuery(userId);
+        
+        var result = await _mediator.Send(query, cancellationToken);
+        
+        return result.IsSuccess ? Ok(result.Value.ToResponse()) : result.ToProblem();
     }
     
     [Authorize(Policy = "RequireLogin")]
