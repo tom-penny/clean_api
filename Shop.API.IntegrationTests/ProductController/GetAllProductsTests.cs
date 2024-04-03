@@ -21,17 +21,17 @@ public class GetAllProductsTests : TestBase
     }
 
     [Fact]
-    public async Task GetAllProducts_ShouldReturn400_WhenSortByInvalid()
+    public async Task GetAllProducts_ShouldReturn400_WhenSortInvalid()
     {
-        var response = await Client.GetAsync("/api/products?sortBy=invalid");
+        var response = await Client.GetAsync("/api/products?sort=invalid");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
     
     [Fact]
-    public async Task GetAllProducts_ShouldReturn400_WhenOrderByInvalid()
+    public async Task GetAllProducts_ShouldReturn400_WhenOrderInvalid()
     {
-        var response = await Client.GetAsync("/api/products?orderBy=invalid");
+        var response = await Client.GetAsync("/api/products?order=invalid");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -47,9 +47,9 @@ public class GetAllProductsTests : TestBase
     [Theory]
     [InlineData(0)]
     [InlineData(26)]
-    public async Task GetAllProducts_ShouldReturn400_WhenSizeInvalid(int size)
+    public async Task GetAllProducts_ShouldReturn400_WhenLimitInvalid(int limit)
     {
-        var response = await Client.GetAsync($"/api/products?size={size}");
+        var response = await Client.GetAsync($"/api/products?limit={limit}");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -61,25 +61,25 @@ public class GetAllProductsTests : TestBase
     [InlineData("price", "desc")]
     [InlineData("date", "asc")]
     [InlineData("date", "desc")]
-    public async Task GetAllProducts_ShouldSortResults_WhenQueryValid(string sortBy, string orderBy)
+    public async Task GetAllProducts_ShouldSortResults_WhenQueryValid(string sort, string order)
     {
         var products = (await DataFactory.CreateProductsAsync(5)).Select(p => p.ToResponse());
         
-        var sortedProducts = sortBy switch
+        var sortedProducts = sort switch
         {
-            "name" => orderBy == "asc"
+            "name" => order == "asc"
                 ? products.OrderBy(p => p.Name)
                 : products.OrderByDescending(p => p.Name),
-            "price" => orderBy == "asc"
+            "price" => order == "asc"
                 ? products.OrderBy(p => p.Price)
                 : products.OrderByDescending(p => p.Price),
-            "date" => orderBy == "asc"
+            "date" => order == "asc"
                 ? products.OrderBy(p => p.Created)
                 : products.OrderByDescending(p => p.Created),
             _ => throw new ArgumentException()
         };
 
-        var response = await Client.GetAsync($"/api/products?sortBy={sortBy}&orderBy={orderBy}");
+        var response = await Client.GetAsync($"/api/products?sort={sort}&order={order}");
     
         var body = await response.Content.ReadFromJsonAsync<ProductsResponse>();
 
@@ -90,17 +90,17 @@ public class GetAllProductsTests : TestBase
     [Theory]
     [InlineData(1, 5)]
     [InlineData(2, 3)]
-    public async Task GetAllProducts_ShouldPaginateResults_WhenQueryValid(int page, int size)
+    public async Task GetAllProducts_ShouldPaginateResults_WhenQueryValid(int page, int limit)
     {
         await DataFactory.CreateProductsAsync(10);
         
-        var response = await Client.GetAsync($"/api/products?page={page}&size={size}");
+        var response = await Client.GetAsync($"/api/products?page={page}&limit={limit}");
 
         var body = await response.Content.ReadFromJsonAsync<ProductsResponse>();
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body!.Products.Count.Should().Be(size);
-        body.HasNextPage.Should().Be(page * size < 10);
+        body!.Products.Count.Should().Be(limit);
+        body.HasNextPage.Should().Be(page * limit < 10);
         body.HasPreviousPage.Should().Be(page > 1);
     }
 }

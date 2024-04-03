@@ -35,10 +35,10 @@ public class ProductController : ControllerBase
     {
         var query = new GetAllProductsQuery
         {
-            SortBy = request.SortBy,
-            OrderBy = request.OrderBy,
+            SortBy = request.Sort,
+            OrderBy = request.Order,
             Page = request.Page,
-            Size = request.Size
+            Size = request.Limit
         };
         
         var result = await _mediator.Send(query, cancellationToken);
@@ -55,10 +55,10 @@ public class ProductController : ControllerBase
         var query = new GetProductsByCategoryQuery
         {
             IdOrSlug = idOrSlug,
-            SortBy = request.SortBy,
-            OrderBy = request.OrderBy,
+            SortBy = request.Sort,
+            OrderBy = request.Order,
             Page = request.Page,
-            Size = request.Size
+            Size = request.Limit
         };
         
         var result = await _mediator.Send(query, cancellationToken);

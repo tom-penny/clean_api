@@ -27,10 +27,10 @@ public class OrderController : ControllerBase
         var query = new GetAllOrdersQuery
         {
             UserId = userId,
-            SortBy = request.SortBy,
-            OrderBy = request.OrderBy,
+            SortBy = request.Sort,
+            OrderBy = request.Order,
             Page = request.Page,
-            Size = request.Size
+            Size = request.Limit
         };
         
         var result = await _mediator.Send(query, cancellationToken);

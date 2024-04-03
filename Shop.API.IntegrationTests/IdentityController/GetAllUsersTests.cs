@@ -23,21 +23,21 @@ public class GetAllUsersTests : TestBase
     }
 
     [Fact]
-    public async Task GetAllUsers_ShouldReturn400_WhenSortByInvalid()
+    public async Task GetAllUsers_ShouldReturn400_WhenSortInvalid()
     {
         EnableAuthentication("Admin");
 
-        var response = await Client.GetAsync("/api/users?sortBy=invalid");
+        var response = await Client.GetAsync("/api/users?sort=invalid");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
     
     [Fact]
-    public async Task GetAllUsers_ShouldReturn400_WhenOrderByInvalid()
+    public async Task GetAllUsers_ShouldReturn400_WhenOrderInvalid()
     {
         EnableAuthentication("Admin");
 
-        var response = await Client.GetAsync("/api/users?orderBy=invalid");
+        var response = await Client.GetAsync("/api/users?order=invalid");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -55,11 +55,11 @@ public class GetAllUsersTests : TestBase
     [Theory]
     [InlineData(0)]
     [InlineData(26)]
-    public async Task GetAllUsers_ShouldReturn400_WhenSizeInvalid(int size)
+    public async Task GetAllUsers_ShouldReturn400_WhenLimitInvalid(int limit)
     {
         EnableAuthentication("Admin");
 
-        var response = await Client.GetAsync($"/api/users?size={size}");
+        var response = await Client.GetAsync($"/api/users?limit={limit}");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -71,27 +71,27 @@ public class GetAllUsersTests : TestBase
     [InlineData("email", "desc")]
     [InlineData("date", "asc")]
     [InlineData("date", "desc")]
-    public async Task GetAllUsers_ShouldSortResults_WhenQueryValid(string sortBy, string orderBy)
+    public async Task GetAllUsers_ShouldSortResults_WhenQueryValid(string sort, string order)
     {
         EnableAuthentication("Admin");
 
         var users = (await DataFactory.CreateUsersAsync(5)).Select(u => u.ToResponse());
         
-        var sortedUsers = sortBy switch
+        var sortedUsers = sort switch
         {
-            "email" => orderBy == "asc"
+            "email" => order == "asc"
                 ? users.OrderBy(u => u.Email)
                 : users.OrderByDescending(u => u.Email),
-            "name" => orderBy == "asc"
+            "name" => order == "asc"
                 ? users.OrderBy(u => u.LastName)
                 : users.OrderByDescending(u => u.LastName),
-            "date" => orderBy == "asc"
+            "date" => order == "asc"
                 ? users.OrderBy(u => u.Joined)
                 : users.OrderByDescending(u => u.Joined),
             _ => throw new ArgumentException()
         };
 
-        var response = await Client.GetAsync($"/api/users?sortBy={sortBy}&orderBy={orderBy}");
+        var response = await Client.GetAsync($"/api/users?sort={sort}&order={order}");
     
         var body = await response.Content.ReadFromJsonAsync<UsersResponse>();
 
@@ -102,19 +102,19 @@ public class GetAllUsersTests : TestBase
     [Theory]
     [InlineData(1, 5)]
     [InlineData(2, 3)]
-    public async Task GetAllUsers_ShouldPaginateResults_WhenQueryValid(int page, int size)
+    public async Task GetAllUsers_ShouldPaginateResults_WhenQueryValid(int page, int limit)
     {
         EnableAuthentication("Admin");
 
         await DataFactory.CreateUsersAsync(10);
         
-        var response = await Client.GetAsync($"/api/users?page={page}&size={size}");
+        var response = await Client.GetAsync($"/api/users?page={page}&limit={limit}");
 
         var body = await response.Content.ReadFromJsonAsync<UsersResponse>();
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body!.Users.Count.Should().Be(size);
-        body.HasNextPage.Should().Be(page * size < 10);
+        body!.Users.Count.Should().Be(limit);
+        body.HasNextPage.Should().Be(page * limit < 10);
         body.HasPreviousPage.Should().Be(page > 1);
     }
     
