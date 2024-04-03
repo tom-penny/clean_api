@@ -53,6 +53,15 @@ public static class ConfigureServices
                 ValidAudience = configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
             };
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["token"];
+
+                    return Task.CompletedTask;
+                }
+            };
         });
         
         services.AddAuthorization(options =>
