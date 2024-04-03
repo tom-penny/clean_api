@@ -21,11 +21,15 @@ public class RegisterUserTests : TestBase
         var request = _faker.Generate();
         
         var response = await Client.PostAsJsonAsync("/api/auth/register", request);
-
-        var body = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-
+        
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body!["token"].ToString().Should().NotBeEmpty();
+        
+        var cookie = response.Headers
+            .FirstOrDefault(h => h.Key == "Set-Cookie").Value
+            .FirstOrDefault(c => c.StartsWith("token="));
+
+        cookie.Should().NotBeNull();
+        cookie.Should().Contain("httponly");
     }
 
     [Fact]
