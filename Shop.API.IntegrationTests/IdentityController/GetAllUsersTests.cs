@@ -55,11 +55,11 @@ public class GetAllUsersTests : TestBase
     [Theory]
     [InlineData(0)]
     [InlineData(26)]
-    public async Task GetAllUsers_ShouldReturn400_WhenLimitInvalid(int limit)
+    public async Task GetAllUsers_ShouldReturn400_WhenSizeInvalid(int size)
     {
         EnableAuthentication("Admin");
 
-        var response = await Client.GetAsync($"/api/users?limit={limit}");
+        var response = await Client.GetAsync($"/api/users?size={size}");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -102,19 +102,19 @@ public class GetAllUsersTests : TestBase
     [Theory]
     [InlineData(1, 5)]
     [InlineData(2, 3)]
-    public async Task GetAllUsers_ShouldPaginateResults_WhenQueryValid(int page, int limit)
+    public async Task GetAllUsers_ShouldPaginateResults_WhenQueryValid(int page, int size)
     {
         EnableAuthentication("Admin");
 
         await DataFactory.CreateUsersAsync(10);
         
-        var response = await Client.GetAsync($"/api/users?page={page}&limit={limit}");
+        var response = await Client.GetAsync($"/api/users?page={page}&size={size}");
 
         var body = await response.Content.ReadFromJsonAsync<UsersResponse>();
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body!.Users.Count.Should().Be(limit);
-        body.HasNextPage.Should().Be(page * limit < 10);
+        body!.Users.Count.Should().Be(size);
+        body.HasNextPage.Should().Be(page * size < 10);
         body.HasPreviousPage.Should().Be(page > 1);
     }
     

@@ -47,9 +47,9 @@ public class GetAllProductsTests : TestBase
     [Theory]
     [InlineData(0)]
     [InlineData(26)]
-    public async Task GetAllProducts_ShouldReturn400_WhenLimitInvalid(int limit)
+    public async Task GetAllProducts_ShouldReturn400_WhenSizeInvalid(int size)
     {
-        var response = await Client.GetAsync($"/api/products?limit={limit}");
+        var response = await Client.GetAsync($"/api/products?size={size}");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -90,17 +90,17 @@ public class GetAllProductsTests : TestBase
     [Theory]
     [InlineData(1, 5)]
     [InlineData(2, 3)]
-    public async Task GetAllProducts_ShouldPaginateResults_WhenQueryValid(int page, int limit)
+    public async Task GetAllProducts_ShouldPaginateResults_WhenQueryValid(int page, int size)
     {
         await DataFactory.CreateProductsAsync(10);
         
-        var response = await Client.GetAsync($"/api/products?page={page}&limit={limit}");
+        var response = await Client.GetAsync($"/api/products?page={page}&size={size}");
 
         var body = await response.Content.ReadFromJsonAsync<ProductsResponse>();
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body!.Products.Count.Should().Be(limit);
-        body.HasNextPage.Should().Be(page * limit < 10);
+        body!.Products.Count.Should().Be(size);
+        body.HasNextPage.Should().Be(page * size < 10);
         body.HasPreviousPage.Should().Be(page > 1);
     }
 }

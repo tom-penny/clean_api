@@ -5,5 +5,5 @@ public class GetAllOrdersRequest
     public required string? Sort { get; init; }
     public required string? Order { get; init; }
     public required int Page { get; init; } = 1;
-    public required int Limit { get; init; } = 10;
+    public required int Size { get; init; } = 10;
 }
