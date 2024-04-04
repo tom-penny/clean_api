@@ -55,11 +55,11 @@ public class GetAllOrdersTests : TestBase
     [Theory]
     [InlineData(0)]
     [InlineData(26)]
-    public async Task GetAllOrders_ShouldReturn400_WhenLimitInvalid(int limit)
+    public async Task GetAllOrders_ShouldReturn400_WhenSizeInvalid(int size)
     {
         EnableAuthentication("Admin");
 
-        var response = await Client.GetAsync($"/api/users/{Guid.NewGuid()}/orders?limit={limit}");
+        var response = await Client.GetAsync($"/api/users/{Guid.NewGuid()}/orders?size={size}");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -97,19 +97,19 @@ public class GetAllOrdersTests : TestBase
     [Theory]
     [InlineData(1, 5)]
     [InlineData(2, 3)]
-    public async Task GetAllOrders_ShouldPaginateResults_WhenQueryValid(int page, int limit)
+    public async Task GetAllOrders_ShouldPaginateResults_WhenQueryValid(int page, int size)
     {
         EnableAuthentication("Admin");
 
         var orders = (await DataFactory.CreateOrdersAsync(10)).Select(o => o.ToResponse()).ToList();
         
-        var response = await Client.GetAsync($"/api/users/{orders.First().UserId}/orders?page={page}&limit={limit}");
+        var response = await Client.GetAsync($"/api/users/{orders.First().UserId}/orders?page={page}&size={size}");
 
         var body = await response.Content.ReadFromJsonAsync<OrdersResponse>();
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        body!.Orders.Count.Should().Be(limit);
-        body.HasNextPage.Should().Be(page * limit < 10);
+        body!.Orders.Count.Should().Be(size);
+        body.HasNextPage.Should().Be(page * size < 10);
         body.HasPreviousPage.Should().Be(page > 1);
     }
     

@@ -38,7 +38,7 @@ public class ProductController : ControllerBase
             SortBy = request.Sort,
             OrderBy = request.Order,
             Page = request.Page,
-            Size = request.Limit
+            Size = request.Size
         };
         
         var result = await _mediator.Send(query, cancellationToken);
@@ -58,7 +58,7 @@ public class ProductController : ControllerBase
             SortBy = request.Sort,
             OrderBy = request.Order,
             Page = request.Page,
-            Size = request.Limit
+            Size = request.Size
         };
         
         var result = await _mediator.Send(query, cancellationToken);
