@@ -130,10 +130,10 @@ public class IdentityController : ControllerBase
     {
         var query = new GetAllUsersQuery
         {
-            SortBy = request.SortBy,
-            OrderBy = request.OrderBy,
+            SortBy = request.Sort,
+            OrderBy = request.Order,
             Page = request.Page,
-            Size = request.Size
+            Size = request.Limit
         };
         
         var result = await _mediator.Send(query, cancellationToken);
