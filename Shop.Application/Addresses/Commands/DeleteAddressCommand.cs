@@ -1,3 +1,5 @@
 namespace Shop.Application.Addresses.Commands;
 
-public record DeleteAddressCommand(Guid Id) : IRequest<Result<Unit>>;
+using Common.Interfaces;
+
+public record DeleteAddressCommand(Guid Id, Guid UserId) : IAuthorizedRequest<Result<Unit>>;

@@ -1,8 +1,9 @@
 namespace Shop.Application.Addresses.Commands;
 
+using Common.Interfaces;
 using Domain.Entities;
 
-public class CreateAddressCommand : IRequest<Result<Address>>
+public class CreateAddressCommand : IAuthorizedRequest<Result<Address>>
 {
     public required Guid UserId { get; init; }
     public required string Street { get; init; }
