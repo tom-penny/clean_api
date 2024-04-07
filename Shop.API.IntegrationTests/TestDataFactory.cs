@@ -14,6 +14,56 @@ public class TestDataFactory
         _context = context;
     }
     
+    public async Task<Address> CreateAddressAsync()
+    {
+        var user = await CreateUserAsync();
+        
+        var address = new Address
+        (
+            id: new AddressId(Guid.NewGuid()),
+            userId: user.Id,
+            street: _faker.Address.StreetAddress(),
+            city: _faker.Address.City(),
+            country: _faker.Address.Country(),
+            postCode: _faker.Address.ZipCode()
+        );
+
+        _context.Addresses.Add(address);
+
+        await _context.SaveChangesAsync();
+
+        return address;
+    }
+
+    public async Task<List<Address>> CreateAddressesAsync(int quantity = 1)
+    {
+        var addresses = new List<Address>();
+
+        var user = await CreateUserAsync();
+
+        for (var i = 0; i < quantity; i++)
+        {
+            var address = new Address
+            (
+                id: new AddressId(Guid.NewGuid()),
+                userId: user.Id,
+                street: _faker.Address.StreetAddress(),
+                city: _faker.Address.City(),
+                country: _faker.Address.Country(),
+                postCode: _faker.Address.ZipCode()
+            );
+            
+            addresses.Add(address);
+        }
+        
+        _context.Addresses.AddRange(addresses);
+
+        await _context.SaveChangesAsync();
+        
+        return addresses;
+    }
+
+    
     public async Task<Category> CreateCategoryAsync()
     {
         var category = new Category
