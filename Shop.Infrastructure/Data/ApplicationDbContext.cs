@@ -11,6 +11,7 @@ using Application.Common.Interfaces;
 public class ApplicationDbContext : IdentityDbContext<IdentityUser<Guid>,
     IdentityRole<Guid>, Guid>, IApplicationDbContext
 {
+    public DbSet<Address> Addresses { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }

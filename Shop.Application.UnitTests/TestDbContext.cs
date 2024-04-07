@@ -5,6 +5,7 @@ using Application.Common.Interfaces;
 
 public class TestDbContext : DbContext, IApplicationDbContext
 {
+    public DbSet<Address> Addresses { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
@@ -20,6 +21,12 @@ public class TestDbContext : DbContext, IApplicationDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Address>(entity =>
+        {
+            entity.Property(e => e.Id).HasConversion(v => v.Value, v => new AddressId(v));
+            entity.Property(e => e.UserId).HasConversion(v => v.Value, v => new UserId(v));
+        });
+        
         modelBuilder.Entity<Category>(entity =>
         {
             entity.Property(e => e.Id).HasConversion(v => v.Value, v => new CategoryId(v));

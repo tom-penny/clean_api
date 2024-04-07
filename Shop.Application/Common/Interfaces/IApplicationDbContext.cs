@@ -6,6 +6,7 @@ using Domain.Entities;
 
 public interface IApplicationDbContext
 {
+    DbSet<Address> Addresses { get; }
     DbSet<Category> Categories { get; }
     DbSet<Order> Orders { get; }
     DbSet<OrderItem> OrderItems { get; }
