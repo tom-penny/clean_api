@@ -65,7 +65,7 @@ public class AddressController : ControllerBase
         
         var address = result.Value.ToResponse();
 
-        return CreatedAtAction(nameof(GetAddress), new { userId = address.UserId, orderId = address.Id }, address);
+        return CreatedAtAction(nameof(GetAddress), new { userId = address.UserId, addressId = address.Id }, address);
     }
     
     [Authorize(Policy = "RequireLogin")]
