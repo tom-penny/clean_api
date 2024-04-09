@@ -44,13 +44,6 @@ public class UserService : IUserService
 
         return user?.Id != null ? Result.Ok(user.Id) : Result.Fail("User not found");
     }
-    
-    public async Task<Result> SignOutUserAsync()
-    {
-        await _signInManager.SignOutAsync();
-
-        return Result.Ok();
-    }
 
     public async Task<Result<string>> GenerateConfirmationTokenAsync(Guid userId)
     {

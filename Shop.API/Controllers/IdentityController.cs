@@ -90,11 +90,15 @@ public class IdentityController : ControllerBase
     [HttpPost("/api/auth/logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
-        var command = new LogoutUserCommand();
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.UnixEpoch
+        };
         
-        var result = await _mediator.Send(command, cancellationToken);
+        Response.Cookies.Append("token", string.Empty, cookieOptions);
 
-        return result.IsSuccess ? Ok() : result.ToProblem();
+        return Ok();
     }
 
     [Authorize(Policy = "RequireLogin")]
