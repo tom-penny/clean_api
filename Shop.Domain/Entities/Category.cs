@@ -25,7 +25,13 @@ public partial class Category : BaseEntity
 
     private string GenerateSlug()
     {
-        return Regex.Replace(Name, "[^0-9A-Za-z _-]", string.Empty).ToLower().Replace(" ", "-");
+        var slug = Regex.Replace(Name, @"(?<=\s)&(?=\s)", "and");
+
+        slug = Regex.Replace(slug, "[^0-9A-Za-z _-]", string.Empty);
+
+        slug = slug.Replace(" ", "-");
+
+        return slug.ToLower();
     }
     
     private Category() {}
