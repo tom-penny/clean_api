@@ -10,22 +10,24 @@ public partial class Category : BaseEntity
 {
     public CategoryId Id { get; init; }
     public string Name { get; private set; }
-    public string Slug => GenerateSlug();
+    public string Slug { get; private set; }
 
     public Category(CategoryId id, string name)
     {
         Id = id;
         Name = name;
+        Slug = GenerateSlug(name);
     }
 
     public void Update(string name)
     {
         Name = name;
+        Slug = GenerateSlug(name);
     }
 
-    private string GenerateSlug()
+    private string GenerateSlug(string name)
     {
-        var slug = Regex.Replace(Name, @"(?<=\s)&(?=\s)", "and");
+        var slug = Regex.Replace(name, @"(?<=\s)&(?=\s)", "and");
 
         slug = Regex.Replace(slug, "[^0-9A-Za-z _-]", string.Empty);
 
