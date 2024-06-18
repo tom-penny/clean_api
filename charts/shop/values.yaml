@@ -1,5 +1,0 @@
-postgresql:
-  auth:
-    username: tom
-    password: password
-    postgresPassword: password
