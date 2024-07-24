@@ -49,7 +49,7 @@ Following Clean Architecture principles, Shop API is structured into concentric 
 1. Clone the repository:
 
     ```
-    git clone https://github.com/w1855014/shop-backend.git
+    git clone https://github.com/tom-penny/shop-backend.git
     ```
 
 2. Install dependencies from the solution directory:
